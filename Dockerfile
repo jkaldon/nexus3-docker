@@ -1,5 +1,5 @@
 # Download, extract Nexus to /tmp/sonatype/nexus
-FROM ubuntu:latest as downloader
+FROM debian:latest as downloader
 
 ARG NEXUS_VERSION=3.25.1-02
 ARG NEXUS_DOWNLOAD_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz
@@ -15,10 +15,19 @@ RUN mkdir /tmp/sonatype && \
 # Runtime image
 # Logic adapted from official Dockerfile
 # https://github.com/sonatype/docker-nexus3/blob/master/Dockerfile
-FROM ubuntu:focal-20200115
+FROM debian:latest
 
-# Install Java 8 and wget
 ARG DEBIAN_FRONTEND=noninteractive
+# Add OpenJDK repo - ubuntu openjdk has issue... (#4)
+RUN apt update && \
+    apt install -y --no-install-recommends wget gnupg && \
+    wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
+    echo 'deb https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ focal main' > /etc/apt/sources.list.d/adoptopenjdk.list && \
+    # apt update .....
+    # apt purge wget gnupg ....
+    apt clean && \
+
+# Install Java 8
 RUN apt update && \
     apt install -y --no-install-recommends openjdk-8-jre-headless && \
     apt clean
