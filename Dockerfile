@@ -2,7 +2,7 @@
 FROM docker.io/arm64v8/alpine:latest as downloader
 
 # Needed for dockerhub automated arm64 builds
-COPY qemu-arm-static /usr/bin
+#COPY qemu-arm-static /usr/bin
 
 ARG NEXUS_VERSION=3.30.1-01
 ARG NEXUS_DOWNLOAD_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz
@@ -20,7 +20,7 @@ FROM docker.io/arm64v8/alpine:3.13
 # Image metadata
 # git commit
 LABEL org.opencontainers.image.revision="-"
-LABEL org.opencontainers.image.source="https://github.com/klo2k/nexus3-docker/tree/alpine"
+LABEL org.opencontainers.image.source="https://github.com/jkaldon/nexus3-docker/tree/alpine"
 
 # Install Java 8 and wget
 RUN apk update && \
