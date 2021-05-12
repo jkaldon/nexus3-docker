@@ -13,7 +13,7 @@ So I'm creating one and sharing it with everyone :-) .
 
 # Running
 ```
-docker run -d -p 8081:8081 --name nexus klo2k/nexus3
+docker run -d -p 8081:8081 --name nexus klo2k/nexus3:alpine
 ```
 
 
@@ -40,7 +40,7 @@ Build ARM 32-bit (armv7l):
 ```
 docker buildx build --pull \
   --platform "linux/arm/v7" \
-  --tag "klo2k/nexus3" \
+  --tag "klo2k/nexus3:alpine" \
   --output=type=docker \
   .
 ```
@@ -49,7 +49,7 @@ Build ARM 64-bit (aarch64):
 ```
 docker buildx build --pull \
   --platform "linux/arm64" \
-  --tag "klo2k/nexus3" \
+  --tag "klo2k/nexus3:alpine" \
   --output=type=docker \
   .
 ```

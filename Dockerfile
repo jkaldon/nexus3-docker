@@ -1,5 +1,5 @@
 # Download, extract Nexus to /tmp/sonatype/nexus
-FROM ubuntu:latest as downloader
+FROM docker.io/arm64v8/alpine:latest as downloader
 
 ARG NEXUS_VERSION=3.30.1-01
 ARG NEXUS_DOWNLOAD_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSION}-unix.tar.gz
@@ -9,24 +9,19 @@ RUN mkdir /tmp/sonatype && \
     tar -zxf /tmp/nexus.tar.gz -C /tmp/sonatype && \
     mv /tmp/sonatype/nexus-${NEXUS_VERSION} /tmp/sonatype/nexus
 
-
-
-
 # Runtime image
 # Logic adapted from official Dockerfile
 # https://github.com/sonatype/docker-nexus3/blob/master/Dockerfile
-FROM ubuntu:focal-20200115
+FROM docker.io/arm64v8/alpine:3.13
 
 # Image metadata
 # git commit
 LABEL org.opencontainers.image.revision="-"
-LABEL org.opencontainers.image.source="https://github.com/klo2k/nexus3-docker"
+LABEL org.opencontainers.image.source="https://github.com/klo2k/nexus3-docker/tree/alpine"
 
 # Install Java 8 and wget
-ARG DEBIAN_FRONTEND=noninteractive
-RUN apt update && \
-    apt install -y --no-install-recommends openjdk-8-jre-headless && \
-    apt clean
+RUN apk update && \
+    apk add openjdk8-jre
 
 # Setup: Rename App, Data and Work directory per official image
 # App directory (/opt/sonatype/nexus)
@@ -56,17 +51,17 @@ RUN chmod 644 \
       /opt/sonatype/nexus/system/net/java/dev/jna/jna-platform/4.5.0/jna-platform-4.5.0.jar
 
 # Create Nexus user + group, based on official image:
-#   nexus:x:200:200:Nexus Repository Manager user:/opt/sonatype/nexus:/bin/false
-#   nexus:x:200:nexus
-RUN groupadd --gid 200 nexus && \
-    useradd \
-      --shell /bin/false \
-      --comment 'Nexus Repository Manager user' \
-      --home-dir /opt/sonatype/nexus \
-      --no-create-home \
-      --no-user-group \
-      --uid 200 \
-      --gid 200 \
+#   nexus:x:400:400:Nexus Repository Manager user:/opt/sonatype/nexus:/bin/false
+#   nexus:x:400:nexus
+RUN addgroup -g 400 nexus && \
+    adduser \
+      -s /bin/false \
+      -g 'Nexus Repository Manager user' \
+      -h /opt/sonatype/nexus \
+      -H \
+      -D \
+      -u 400 \
+      -G nexus \
       nexus
 
 # Data directory "/nexus-data" owns "nexus" user
