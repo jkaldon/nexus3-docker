@@ -9,7 +9,9 @@ ARG NEXUS_DOWNLOAD_URL=https://download.sonatype.com/nexus/3/nexus-${NEXUS_VERSI
 
 ADD "${NEXUS_DOWNLOAD_URL}" "/tmp/nexus.tar.gz"
 RUN mkdir /tmp/sonatype && \
+    find /tmp && \
     tar -zxf /tmp/nexus.tar.gz -C /tmp/sonatype && \
+    find /tmp && \
     mv /tmp/sonatype/nexus-${NEXUS_VERSION} /tmp/sonatype/nexus
 
 # Runtime image
