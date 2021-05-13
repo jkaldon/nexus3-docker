@@ -24,7 +24,7 @@ LABEL org.opencontainers.image.source="https://github.com/jkaldon/nexus3-docker/
 
 # Install Java 8 and wget
 RUN apk update && \
-    apk add openjdk8-jre
+    apk add openjdk11-jre-headless
 
 # Setup: Rename App, Data and Work directory per official image
 # App directory (/opt/sonatype/nexus)
